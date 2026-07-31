@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleHub · La plateforme commerciale opérée pour les PME françaises</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/dbquub3ug/image/upload/v1785503488/favicon_SH_vgwfna.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sh: {
+                            orange: '#E86C3F',
+                            orangeDark: '#C8552E',
+                            green: '#16A34A',
+                            dark: '#0F172A',
+                            slate: '#475569',
+                            lightSlate: '#94A3B8',
+                            bgGray: '#F8FAFC',
+                            border: '#E2E8F0'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        tech: ['Space Grotesk', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" defer></script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FFFFFF; color: #0F172A; }
+        .tech { font-family: 'Space Grotesk', monospace; }
+
+        /* ===== SIGNATURE : fenêtre produit (chrome CRM) ===== */
+        .win {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            box-shadow: 0 20px 50px -20px rgba(15, 23, 42, 0.18);
+            overflow: hidden;
+        }
+        .win-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: #F8FAFC;
+            border-bottom: 1px solid #E2E8F0;
+        }
+        .win-dot { width: 8px; height: 8px; border-radius: 999px; }
+        .win-url {
+            margin-left: 10px;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 10px;
+            color: #94A3B8;
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 999px;
+            padding: 3px 10px;
+        }
+
+        .bento { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; transition: all .3s cubic-bezier(.16,1,.3,1); }
+        .bento:hover { transform: translateY(-3px); border-color: #E86C3F; box-shadow: 0 14px 28px -12px rgba(232,108,63,.18); }
+        .cta-btn { background: #0F172A; transition: all .25s ease; }
+        .cta-btn:hover { background: #E86C3F; transform: translateY(-1px); }
+        .reveal { opacity: 0; transform: translateY(20px); transition: all .6s cubic-bezier(.16,1,.3,1); }
+        .reveal.is-visible { opacity: 1; transform: translateY(0); }
+        .offer-anchor { scroll-margin-top: 76px; }
+        .dot-flow { animation: dotflow 1.8s ease-in-out infinite; }
+        @keyframes dotflow { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
+        @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .modal-backdrop { transition: opacity 0.3s ease; }
+        .modal-panel { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-hidden { pointer-events: none; }
+        .modal-hidden .modal-backdrop { opacity: 0; pointer-events: none; }
+        .modal-hidden .modal-panel { opacity: 0; transform: translateY(20px) scale(0.96); }
+        #offer-modal-wrapper:not(.modal-hidden) { pointer-events: auto; }
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- ===================== BARRE DE PROGRESSION + NAV ===================== -->
+    <div class="fixed top-0 left-0 w-full h-[3px] bg-sh-border z-[60]">
+        <div id="scroll-progress" class="h-full bg-sh-orange transition-[width] duration-100 ease-out" style="width:0%"></div>
+    </div>
+    <header class="no-print fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md border-b border-sh-border z-50">
+        <div class="w-full px-4 md:px-8 py-3 flex items-center justify-between gap-4">
+            <a href="#slide-1" class="shrink-0 flex items-center">
+                <img src="https://res.cloudinary.com/dbquub3ug/image/upload/v1785503390/logo_simplehub_w7pqur.png" alt="SimpleHub" class="h-7 w-auto object-contain" />
+            </a>
+            <nav id="main-nav" class="flex-1 flex items-center justify-center gap-5 md:gap-6 text-xs font-semibold text-sh-slate overflow-x-auto">
+                <a href="#slide-benefices" data-nav class="nav-link pb-1 border-b-2 border-transparent whitespace-nowrap transition-colors">Bénéfices</a>
+                <a href="#slide-comment" data-nav class="nav-link pb-1 border-b-2 border-transparent whitespace-nowrap transition-colors">Comment ça marche</a>
+                <a href="#slide-different" data-nav class="nav-link pb-1 border-b-2 border-transparent whitespace-nowrap transition-colors">Pourquoi nous</a>
+                <a href="#slide-modules" data-nav class="nav-link pb-1 border-b-2 border-transparent whitespace-nowrap transition-colors">Modules</a>
+                <a href="#slide-tarifs" data-nav class="nav-link pb-1 border-b-2 border-transparent whitespace-nowrap transition-colors">Tarifs</a>
+                <a href="#slide-references" data-nav class="nav-link pb-1 border-b-2 border-transparent whitespace-nowrap transition-colors">Références</a>
+            </nav>
+            <button onclick="openOfferModal('SimpleHub', 'Démo personnalisée')" class="shrink-0 hidden sm:inline-flex items-center gap-2 cta-btn text-white text-xs font-bold px-4 py-2 rounded-lg">
+                Demander une démo
+            </button>
+        </div>
+    </header>
+
+    <div id="side-dots" class="no-print hidden lg:flex flex-col gap-3 fixed right-6 top-1/2 -translate-y-1/2 z-40">
+        <a href="#slide-benefices" data-dot title="Bénéfices" class="dot-link block w-2 h-2 rounded-full bg-sh-border hover:bg-sh-orange/50 transition-all duration-300"></a>
+        <a href="#slide-comment" data-dot title="Comment ça marche" class="dot-link block w-2 h-2 rounded-full bg-sh-border hover:bg-sh-orange/50 transition-all duration-300"></a>
+        <a href="#slide-different" data-dot title="Pourquoi nous" class="dot-link block w-2 h-2 rounded-full bg-sh-border hover:bg-sh-orange/50 transition-all duration-300"></a>
+        <a href="#slide-modules" data-dot title="Modules" class="dot-link block w-2 h-2 rounded-full bg-sh-border hover:bg-sh-orange/50 transition-all duration-300"></a>
+        <a href="#slide-tarifs" data-dot title="Tarifs" class="dot-link block w-2 h-2 rounded-full bg-sh-border hover:bg-sh-orange/50 transition-all duration-300"></a>
+        <a href="#slide-references" data-dot title="Références" class="dot-link block w-2 h-2 rounded-full bg-sh-border hover:bg-sh-orange/50 transition-all duration-300"></a>
+    </div>
+
+    <!-- ===================== 1. COUVERTURE / POSITIONNEMENT ===================== -->
+    <section id="slide-1" class="pt-28 pb-20 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-6 space-y-6">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-sh-dark leading-[1.1]">
+                    <span class="text-sh-orange">La plateforme commerciale</span> opérée pour les PME françaises.
+                </h1>
+                <p class="text-base text-sh-slate leading-relaxed max-w-lg">
+                    Pas un logiciel de plus à configurer seul. Une équipe dédiée pilote votre site web, votre CRM commercial et vos campagnes marketing pendant que vous vendez.
+                </p>
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <span class="inline-flex items-center gap-1.5 bg-sh-bgGray border border-sh-border px-3 py-1.5 rounded-lg text-xs font-bold text-sh-dark"><i data-lucide="layout-grid" class="w-3.5 h-3.5 text-sh-orange"></i>Logiciel</span>
+                    <span class="inline-flex items-center gap-1.5 bg-sh-bgGray border border-sh-border px-3 py-1.5 rounded-lg text-xs font-bold text-sh-dark"><i data-lucide="users" class="w-3.5 h-3.5 text-sh-orange"></i>Humain</span>
+                    <span class="inline-flex items-center gap-1.5 bg-sh-bgGray border border-sh-border px-3 py-1.5 rounded-lg text-xs font-bold text-sh-dark"><i data-lucide="bot" class="w-3.5 h-3.5 text-sh-orange"></i>IA</span>
+                </div>
+                <div class="flex flex-wrap gap-4 pt-4">
+                    <button onclick="openOfferModal('SimpleHub', 'Démo personnalisée')" class="cta-btn text-white font-bold text-sm px-7 py-3.5 rounded-lg inline-flex items-center gap-2">
+                        Demander une démo <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                    <a href="#slide-tarifs" class="inline-flex items-center gap-2 border-2 border-sh-dark text-sh-dark font-bold text-sm px-7 py-3.5 rounded-lg hover:bg-sh-dark hover:text-white transition-all">
+                        Voir les tarifs
+                    </a>
+                </div>
+                <p class="text-[11px] text-sh-lightSlate pt-2">Solution française · Hébergement RGPD · Dès 49€/mois</p>
+            </div>
+
+            <!-- MOCKUP PRODUIT : fenêtre CRM avec pipeline -->
+            <div class="lg:col-span-6">
+                <div class="win reveal is-visible">
+                    <div class="win-bar">
+                        <span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span>
+                        <span class="win-url">simplehub.app/pipeline</span>
+                    </div>
+                    <div class="p-5 bg-white space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-sh-dark">Pipeline commercial</span>
+                            <span class="tech text-[10px] text-sh-green flex items-center gap-1"><i data-lucide="trending-up" class="w-3 h-3"></i>+18% ce mois</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2">
+                            <div class="space-y-2">
+                                <span class="text-[9px] font-bold text-sh-lightSlate uppercase">Nouveau</span>
+                                <div class="bg-sh-bgGray border border-sh-border rounded-lg p-2 text-[10px] text-sh-slate">Devis Rousseau</div>
+                                <div class="bg-sh-bgGray border border-sh-border rounded-lg p-2 text-[10px] text-sh-slate">Contact Riester</div>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="text-[9px] font-bold text-sh-lightSlate uppercase">Qualifié</span>
+                                <div class="bg-sh-orange/10 border border-sh-orange/30 rounded-lg p-2 text-[10px] text-sh-dark font-semibold">Espace H <span class="dot-flow inline-block w-1.5 h-1.5 rounded-full bg-sh-orange ml-1"></span></div>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="text-[9px] font-bold text-sh-lightSlate uppercase">Proposition</span>
+                                <div class="bg-sh-bgGray border border-sh-border rounded-lg p-2 text-[10px] text-sh-slate">Evasion CC</div>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="text-[9px] font-bold text-sh-lightSlate uppercase">Gagné</span>
+                                <div class="bg-sh-green/10 border border-sh-green/30 rounded-lg p-2 text-[10px] text-sh-dark font-semibold">3 comptes</div>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-sh-border flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-sh-orange/10 flex items-center justify-center"><i data-lucide="bot" class="w-3.5 h-3.5 text-sh-orange"></i></div>
+                            <span class="text-[10px] text-sh-slate">Scoring IA : 4 leads à recontacter aujourd'hui</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== CE QUE VEUT DIRE "PLATEFORME OPÉRÉE" ===================== -->
+    <section class="bg-sh-bgGray border-y border-sh-border py-24 px-6">
+        <div class="max-w-5xl mx-auto reveal">
+            <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-white px-4 py-1.5 rounded-full border border-sh-border">Notre positionnement</span>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">"Opérée", ça veut dire quoi concrètement ?</h2>
+            <p class="text-sm md:text-base text-sh-slate mt-3 max-w-3xl leading-relaxed">
+                Un logiciel de plus ne résout rien si personne ne le fait vivre. Chez SimpleHub, une équipe prend en main votre activité commerciale, du trafic jusqu'au client signé.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3 mt-10">
+                <div class="bg-white border border-sh-border rounded-2xl p-5 relative">
+                    <span class="tech text-[10px] text-sh-orange font-bold">01</span>
+                    <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center mt-2 mb-3"><i data-lucide="megaphone" class="w-4 h-4 text-sh-orange"></i></div>
+                    <h3 class="text-sm font-bold text-sh-dark">Générer du trafic</h3>
+                    <p class="text-xs text-sh-slate mt-1 leading-relaxed">Un site pensé pour convertir, pas juste pour exister.</p>
+                </div>
+                <div class="bg-white border border-sh-border rounded-2xl p-5">
+                    <span class="tech text-[10px] text-sh-orange font-bold">02</span>
+                    <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center mt-2 mb-3"><i data-lucide="filter" class="w-4 h-4 text-sh-orange"></i></div>
+                    <h3 class="text-sm font-bold text-sh-dark">Qualifier les leads</h3>
+                    <p class="text-xs text-sh-slate mt-1 leading-relaxed">Transformer le trafic en prospects réellement prêts à acheter.</p>
+                </div>
+                <div class="bg-white border border-sh-border rounded-2xl p-5">
+                    <span class="tech text-[10px] text-sh-orange font-bold">03</span>
+                    <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center mt-2 mb-3"><i data-lucide="user-check" class="w-4 h-4 text-sh-orange"></i></div>
+                    <h3 class="text-sm font-bold text-sh-dark">Soulager vos commerciaux</h3>
+                    <p class="text-xs text-sh-slate mt-1 leading-relaxed">Ils vendent. Le tri, la saisie et les relances sont pris en charge.</p>
+                </div>
+                <div class="bg-white border border-sh-border rounded-2xl p-5">
+                    <span class="tech text-[10px] text-sh-orange font-bold">04</span>
+                    <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center mt-2 mb-3"><i data-lucide="repeat" class="w-4 h-4 text-sh-orange"></i></div>
+                    <h3 class="text-sm font-bold text-sh-dark">Automatiser le répétitif</h3>
+                    <p class="text-xs text-sh-slate mt-1 leading-relaxed">Relances, scoring, campagnes : ce qui peut tourner seul, tourne seul.</p>
+                </div>
+                <div class="bg-white border border-sh-border rounded-2xl p-5">
+                    <span class="tech text-[10px] text-sh-orange font-bold">05</span>
+                    <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center mt-2 mb-3"><i data-lucide="life-buoy" class="w-4 h-4 text-sh-orange"></i></div>
+                    <h3 class="text-sm font-bold text-sh-dark">Accompagner l'usage</h3>
+                    <p class="text-xs text-sh-slate mt-1 leading-relaxed">Une équipe reste disponible pour que l'outil serve vraiment, dans la durée.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 2. LES BÉNÉFICES POUR LE CLIENT ===================== -->
+    <section id="slide-benefices" class="max-w-5xl mx-auto px-6 py-24 reveal">
+        <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-sh-orange/10 px-4 py-1.5 rounded-full">Les bénéfices</span>
+        <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">Ce que ça change concrètement pour vous</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-10">
+            <div class="bento rounded-2xl p-5 space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-sh-orange/10 flex items-center justify-center"><i data-lucide="inbox" class="w-5 h-5 text-sh-orange"></i></div>
+                <h3 class="text-sm font-bold text-sh-dark">Plus aucun lead perdu</h3>
+                <p class="text-xs text-sh-slate leading-relaxed">Chaque demande entrante est qualifiée et affectée, même quand personne n'a le temps.</p>
+            </div>
+            <div class="bento rounded-2xl p-5 space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-sh-orange/10 flex items-center justify-center"><i data-lucide="clock" class="w-5 h-5 text-sh-orange"></i></div>
+                <h3 class="text-sm font-bold text-sh-dark">Du temps rendu à vos équipes</h3>
+                <p class="text-xs text-sh-slate leading-relaxed">Les tâches répétitives sont automatisées ou prises en charge par notre équipe.</p>
+            </div>
+            <div class="bento rounded-2xl p-5 space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-sh-orange/10 flex items-center justify-center"><i data-lucide="activity" class="w-5 h-5 text-sh-orange"></i></div>
+                <h3 class="text-sm font-bold text-sh-dark">Une activité qui tourne sans vous</h3>
+                <p class="text-xs text-sh-slate leading-relaxed">Le pipeline avance même quand vous êtes en rendez-vous ou en congés.</p>
+            </div>
+            <div class="bento rounded-2xl p-5 space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-sh-orange/10 flex items-center justify-center"><i data-lucide="euro" class="w-5 h-5 text-sh-orange"></i></div>
+                <h3 class="text-sm font-bold text-sh-dark">Un coût prévisible</h3>
+                <p class="text-xs text-sh-slate leading-relaxed">Un forfait tout inclus, sans mauvaise surprise au fil des modules.</p>
+            </div>
+        </div>
+
+        <div class="bg-sh-dark rounded-2xl p-6 md:p-8 mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-white text-sm md:text-base font-medium max-w-xl">Comment on délivre ces bénéfices : une plateforme, une équipe dédiée et de l'IA en fond de tâche, jamais un logiciel livré seul.</p>
+            <a href="#slide-comment" class="shrink-0 inline-flex items-center gap-2 bg-white text-sh-dark font-bold text-xs px-5 py-2.5 rounded-lg">Voir comment <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
+        </div>
+    </section>
+
+    <!-- ===================== 3. COMMENT NOUS LE FAISONS ===================== -->
+    <section id="slide-comment" class="bg-sh-bgGray border-y border-sh-border py-24 px-6">
+        <div class="max-w-5xl mx-auto reveal">
+            <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-white px-4 py-1.5 rounded-full border border-sh-border">Comment nous le faisons</span>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">La plateforme qui réunit logiciel, humain et IA</h2>
+            <p class="text-sm md:text-base text-sh-slate mt-3 max-w-3xl leading-relaxed">
+                Un logiciel va vous aider à structurer votre activité. Une équipe est capable de vous accompagner dans sa mise en œuvre. L'intelligence artificielle et l'automatisation sont à même de vous aider à gagner du temps. Mais la véritable valeur apparaît lorsque ces trois dimensions fonctionnent ensemble.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+                <!-- LOGICIEL -->
+                <div class="win">
+                    <div class="win-bar"><span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span><span class="win-url">Hub Sales</span></div>
+                    <div class="p-5 space-y-3">
+                        <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center"><i data-lucide="layout-grid" class="w-4 h-4 text-sh-orange"></i></div>
+                        <h3 class="text-base font-bold text-sh-dark">Le logiciel</h3>
+                        <p class="text-xs text-sh-slate leading-relaxed">Un environnement pour centraliser vos données, structurer votre activité, automatiser vos processus et connecter vos points de contact. Vos équipes disposent d'une base commune pour travailler et piloter leur activité.</p>
+                        <div class="pt-2 space-y-1.5">
+                            <div class="h-2 bg-sh-border rounded-full overflow-hidden"><div class="h-full bg-sh-orange" style="width:82%"></div></div>
+                            <span class="text-[9px] text-sh-lightSlate tech">Taux d'adoption équipe · 82%</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- HUMAIN -->
+                <div class="win">
+                    <div class="win-bar"><span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span><span class="win-url">Support dédié</span></div>
+                    <div class="p-5 space-y-3">
+                        <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center"><i data-lucide="users" class="w-4 h-4 text-sh-orange"></i></div>
+                        <h3 class="text-base font-bold text-sh-dark">L'humain</h3>
+                        <p class="text-xs text-sh-slate leading-relaxed">Un outil ne suffit pas toujours : il faut du temps pour le paramétrer, l'adopter, l'intégrer. SimpleHub associe sa plateforme à un accompagnement humain et, avec Operations as a Service, à des équipes qui prennent en charge certaines opérations pour vous.</p>
+                        <div class="pt-2 flex items-center gap-2 bg-sh-bgGray border border-sh-border rounded-lg p-2">
+                            <div class="w-6 h-6 rounded-full bg-sh-orange/20"></div>
+                            <span class="text-[10px] text-sh-dark font-semibold">Vous décidez, on exécute.</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- IA -->
+                <div class="win">
+                    <div class="win-bar"><span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span><span class="win-url">Scoring IA</span></div>
+                    <div class="p-5 space-y-3">
+                        <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center"><i data-lucide="bot" class="w-4 h-4 text-sh-orange"></i></div>
+                        <h3 class="text-base font-bold text-sh-dark">L'IA</h3>
+                        <p class="text-xs text-sh-slate leading-relaxed">Elle automatise certaines tâches, accélère le traitement de l'information et aide vos équipes à consacrer plus de temps aux actions à forte valeur ajoutée. L'objectif n'est pas de remplacer vos équipes, mais de les rendre plus efficaces.</p>
+                        <div class="pt-2 flex gap-1.5">
+                            <span class="text-[9px] font-bold bg-sh-green/10 text-sh-green px-2 py-1 rounded-full">Chaud · 12</span>
+                            <span class="text-[9px] font-bold bg-sh-orange/10 text-sh-orange px-2 py-1 rounded-full">Tiède · 28</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-sh-dark rounded-2xl p-6 md:p-8 mt-8 flex flex-col md:flex-row items-center gap-6">
+                <div class="w-12 h-12 rounded-xl bg-sh-orange/20 flex items-center justify-center shrink-0"><i data-lucide="network" class="w-6 h-6 text-sh-orange"></i></div>
+                <p class="text-white text-sm md:text-base leading-relaxed">
+                    <strong class="block text-base mb-1">Un écosystème qui vous accompagne à chaque étape</strong>
+                    Structurer votre activité commerciale, automatiser votre marketing, connecter votre site à votre CRM, déléguer certaines opérations : SimpleHub réunit ces leviers dans un même écosystème plutôt que de vous laisser les assembler seul.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 4. POURQUOI SIMPLEHUB EST DIFFÉRENT ===================== -->
+    <section id="slide-different" class="max-w-5xl mx-auto px-6 py-24 reveal">
+        <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-sh-orange/10 px-4 py-1.5 rounded-full">Pourquoi choisir SimpleHub</span>
+        <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">Ce qui nous différencie vraiment</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
+            <div class="bento rounded-2xl p-5 space-y-2">
+                <i data-lucide="user-check" class="w-5 h-5 text-sh-orange"></i>
+                <h3 class="text-sm font-bold text-sh-dark">Accompagnement permanent</h3>
+                <p class="text-xs text-sh-slate leading-relaxed">Paramétrage, prise en main, suivi : une équipe reste avec vous après la mise en place.</p>
+            </div>
+            <div class="bento rounded-2xl p-5 space-y-2">
+                <i data-lucide="flag" class="w-5 h-5 text-sh-orange"></i>
+                <h3 class="text-sm font-bold text-sh-dark">Solution française</h3>
+                <p class="text-xs text-sh-slate leading-relaxed">Conçue, développée et hébergée en France, soumise au droit français et européen exclusivement.</p>
+            </div>
+            <div class="bento rounded-2xl p-5 space-y-2">
+                <i data-lucide="shield-check" class="w-5 h-5 text-sh-orange"></i>
+                <h3 class="text-sm font-bold text-sh-dark">Conforme RGPD</h3>
+                <p class="text-xs text-sh-slate leading-relaxed">Hébergement et traitement des données conformes, sans zone grise.</p>
+            </div>
+            <div class="bento rounded-2xl p-5 space-y-2">
+                <i data-lucide="lock" class="w-5 h-5 text-sh-orange"></i>
+                <h3 class="text-sm font-bold text-sh-dark">Données protégées</h3>
+                <p class="text-xs text-sh-slate leading-relaxed">Vos données restent chez vous, dans une infrastructure sécurisée.</p>
+            </div>
+            <div class="bento rounded-2xl p-5 space-y-2">
+                <i data-lucide="settings-2" class="w-5 h-5 text-sh-orange"></i>
+                <h3 class="text-sm font-bold text-sh-dark">Une plateforme opérée</h3>
+                <p class="text-xs text-sh-slate leading-relaxed">Vous n'achetez pas un accès logiciel : une équipe fait tourner l'outil pour vous.</p>
+            </div>
+            <div class="bento rounded-2xl p-5 space-y-2">
+                <i data-lucide="headset" class="w-5 h-5 text-sh-orange"></i>
+                <h3 class="text-sm font-bold text-sh-dark">Accompagnement continu</h3>
+                <p class="text-xs text-sh-slate leading-relaxed">Pas seulement un logiciel livré : un suivi dans la durée, pas un ticket fermé en 48h.</p>
+            </div>
+        </div>
+
+        <!-- COMPARATIF PRIX -->
+        <div class="win mt-10">
+            <div class="win-bar"><span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span><span class="win-url">comparatif-prix.simplehub.app</span></div>
+            <div class="p-6 md:p-8">
+                <h3 class="text-sm font-bold text-sh-dark uppercase tracking-wide mb-6">Jusqu'à 4 fois moins cher qu'un CRM international</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-xs font-semibold text-sh-slate"><span>Solution internationale (Pro)</span><span class="tech">≈ 100 $ / user / mois</span></div>
+                        <div class="h-4 bg-sh-border rounded-full overflow-hidden"><div class="h-full bg-sh-lightSlate" style="width:100%"></div></div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-xs font-semibold text-sh-dark"><span>SimpleHub Starter</span><span class="tech text-sh-orange font-bold">149€ / 5 users / mois</span></div>
+                        <div class="h-4 bg-sh-border rounded-full overflow-hidden"><div class="h-full bg-sh-orange" style="width:25%"></div></div>
+                    </div>
+                </div>
+                <p class="text-[11px] text-sh-lightSlate mt-4 italic">Comparaison indicative sur la base des grilles publiques des principaux éditeurs CRM internationaux, prix HT.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 5. LES MODULES DE LA PLATEFORME ===================== -->
+    <section id="slide-modules" class="bg-sh-bgGray border-y border-sh-border py-24 px-6">
+        <div class="max-w-5xl mx-auto reveal">
+            <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-white px-4 py-1.5 rounded-full border border-sh-border">Les modules</span>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">Trois modules, une seule plateforme</h2>
+            <p class="text-sm md:text-base text-sh-slate mt-3 max-w-2xl">Opérées par notre équipe. Augmentées par l'IA.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+                <a href="#slide-simpleweb" class="win block hover:border-sh-orange transition-colors">
+                    <div class="win-bar"><span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span><span class="win-url">SimpleWEB</span></div>
+                    <div class="p-5 space-y-3">
+                        <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center"><i data-lucide="globe" class="w-4 h-4 text-sh-orange"></i></div>
+                        <h3 class="text-base font-bold text-sh-dark">SimpleWEB</h3>
+                        <p class="text-xs text-sh-slate leading-relaxed">Votre vitrine et votre point d'entrée de leads.</p>
+                        <ul class="text-xs text-sh-slate space-y-1.5 pt-1">
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Sites prêts à l'emploi ou sur mesure</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Leads transmis au CRM automatiquement</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Tracking comportemental natif</li>
+                        </ul>
+                        <span class="text-[10px] font-bold text-sh-orange inline-flex items-center gap-1 pt-1">En savoir plus <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                    </div>
+                </a>
+                <a href="#slide-hubsales" class="win block border-2 border-sh-orange hover:border-sh-orangeDark transition-colors">
+                    <div class="win-bar"><span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span><span class="win-url">Sales</span></div>
+                    <div class="p-5 space-y-3">
+                        <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center"><i data-lucide="trending-up" class="w-4 h-4 text-sh-orange"></i></div>
+                        <h3 class="text-base font-bold text-sh-dark">Sales</h3>
+                        <p class="text-xs text-sh-slate leading-relaxed">Le cœur du pilotage commercial au quotidien.</p>
+                        <ul class="text-xs text-sh-slate space-y-1.5 pt-1">
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Centralisation de tous les leads</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Workflows de traitement automatisés</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Tableaux de bord temps réel</li>
+                        </ul>
+                        <span class="text-[10px] font-bold text-sh-orange inline-flex items-center gap-1 pt-1">En savoir plus <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                    </div>
+                </a>
+                <a href="#slide-hubdata" class="win block hover:border-sh-orange transition-colors">
+                    <div class="win-bar"><span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span><span class="win-url">Marketing & Data</span></div>
+                    <div class="p-5 space-y-3">
+                        <div class="w-9 h-9 rounded-lg bg-sh-orange/10 flex items-center justify-center"><i data-lucide="bar-chart-3" class="w-4 h-4 text-sh-orange"></i></div>
+                        <h3 class="text-base font-bold text-sh-dark">Marketing Automation & Data</h3>
+                        <p class="text-xs text-sh-slate leading-relaxed">Vos campagnes et vos chiffres, au même endroit.</p>
+                        <ul class="text-xs text-sh-slate space-y-1.5 pt-1">
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Campagnes email, SMS, notif, social</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Scoring intelligent et segmentation dynamique</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Dashboards et reporting mensuel automatique</li>
+                        </ul>
+                        <span class="text-[10px] font-bold text-sh-orange inline-flex items-center gap-1 pt-1">En savoir plus <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 5bis. SIMPLEWEB — SLIDE DÉDIÉE ===================== -->
+    <section id="slide-simpleweb" class="max-w-5xl mx-auto px-6 py-24 reveal">
+        <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-sh-orange/10 px-4 py-1.5 rounded-full">Module · SimpleWeb</span>
+        <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">Votre site, connecté nativement à votre CRM</h2>
+        <p class="text-sm text-sh-slate mt-2 max-w-xl">Chaque visiteur devient un lead qualifié dans Hub Sales, sans ressaisie.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8 items-center">
+            <div class="lg:col-span-6 win">
+                <div class="win-bar"><span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span><span class="win-url">votresite.fr</span></div>
+                <div class="p-6 space-y-4">
+                    <div class="h-3 w-2/3 bg-sh-border rounded-full"></div>
+                    <div class="h-2 w-full bg-sh-border/60 rounded-full"></div>
+                    <div class="h-2 w-4/5 bg-sh-border/60 rounded-full"></div>
+                    <div class="bg-sh-orange/10 border border-sh-orange/30 rounded-lg p-3 flex items-center justify-between">
+                        <span class="text-xs font-semibold text-sh-dark">Formulaire de contact</span>
+                        <span class="text-[10px] font-bold text-white bg-sh-orange px-2 py-1 rounded">Envoyer</span>
+                    </div>
+                    <div class="flex items-center gap-2 pt-2">
+                        <i data-lucide="arrow-down" class="w-4 h-4 text-sh-lightSlate dot-flow"></i>
+                        <span class="text-[10px] text-sh-lightSlate tech">Transmission automatique</span>
+                    </div>
+                    <div class="bg-sh-dark rounded-lg p-3 flex items-center gap-2">
+                        <i data-lucide="user-plus" class="w-4 h-4 text-sh-orange"></i>
+                        <span class="text-[10px] text-white font-semibold">Nouveau lead créé dans Hub Sales</span>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:col-span-6 grid grid-cols-2 gap-4">
+                <div class="bento rounded-2xl p-4 text-center">
+                    <i data-lucide="pencil-line" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                    <p class="text-xs font-bold text-sh-dark mt-2">Édition sans code</p>
+                    <p class="text-[10px] text-sh-slate mt-1">Autonomie totale sur vos contenus.</p>
+                </div>
+                <div class="bento rounded-2xl p-4 text-center">
+                    <i data-lucide="target" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                    <p class="text-xs font-bold text-sh-dark mt-2">Landing pages</p>
+                    <p class="text-[10px] text-sh-slate mt-1">Chaque visiteur devient une opportunité.</p>
+                </div>
+                <div class="bento rounded-2xl p-4 text-center">
+                    <i data-lucide="search" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                    <p class="text-xs font-bold text-sh-dark mt-2">SEO natif</p>
+                    <p class="text-[10px] text-sh-slate mt-1">Visible et mesuré, sans plugin externe.</p>
+                </div>
+                <div class="bento rounded-2xl p-4 text-center">
+                    <i data-lucide="user-cog" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                    <p class="text-xs font-bold text-sh-dark mt-2">Contenu adaptatif</p>
+                    <p class="text-[10px] text-sh-slate mt-1">Selon le profil CRM du visiteur.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 5ter. SIMPLEWEB — TARIFS ===================== -->
+    <section class="bg-sh-bgGray border-y border-sh-border py-24 px-6">
+        <div class="max-w-5xl mx-auto reveal">
+            <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-white px-4 py-1.5 rounded-full border border-sh-border">Tarifs SimpleWeb</span>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">Votre site web à partir de 49€/mois</h2>
+            <p class="text-sm text-sh-slate mt-2 max-w-2xl">De la création d'un site vitrine à l'architecture web sur mesure.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10 items-stretch">
+                <div class="bento rounded-2xl p-6 bg-white flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <h3 class="text-lg font-bold text-sh-dark">Démarrage</h3>
+                        <div><span class="text-3xl font-black text-sh-dark">49€</span><span class="text-xs text-sh-slate">/mois</span></div>
+                        <p class="text-[11px] text-sh-lightSlate">0€ de mise en place</p>
+                        <p class="text-xs text-sh-slate">Site vitrine créé pour vous sur un modèle catalogue. Idéal pour démarrer rapidement.</p>
+                        <ul class="text-xs text-sh-slate space-y-1.5 pt-2 border-t border-sh-border">
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Site créé sur modèle catalogue</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Hébergement inclus + certificat SSL</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Support par email</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Mises à jour de sécurité</li>
+                        </ul>
+                    </div>
+                    <button onclick="openOfferModal('SimpleWeb Démarrage', '49€ HT / mois')" class="mt-6 text-center border-2 border-sh-dark text-sh-dark font-bold text-xs py-2.5 rounded-lg hover:bg-sh-dark hover:text-white transition-all">Demander une démo</button>
+                </div>
+
+                <div class="rounded-2xl p-6 flex flex-col justify-between bg-sh-dark text-white shadow-xl relative">
+                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-sh-orange text-white text-[10px] font-bold uppercase tracking-wide px-3 py-1 rounded-full">Populaire</span>
+                    <div class="space-y-3 pt-2">
+                        <h3 class="text-lg font-bold">Croissance</h3>
+                        <div><span class="text-3xl font-black text-sh-orange">79€</span><span class="text-xs text-white/70">/mois</span></div>
+                        <p class="text-[11px] text-white/60">≈ 2 500€ de mise en place</p>
+                        <p class="text-xs text-white/80">Design sur mesure et SEO technique pour un site pensé pour convertir, au-delà du simple catalogue.</p>
+                        <ul class="text-xs text-white/90 space-y-1.5 pt-2 border-t border-white/10">
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Design sur mesure</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>CMS évolutif intégré</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>SEO technique optimisé</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Support prioritaire · hébergement haute performance</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Statistiques avancées</li>
+                        </ul>
+                    </div>
+                    <button onclick="openOfferModal('SimpleWeb Croissance', '79€ HT / mois')" class="mt-6 text-center bg-sh-orange text-white font-bold text-xs py-2.5 rounded-lg w-full">Demander une démo</button>
+                </div>
+
+                <div class="bento rounded-2xl p-6 bg-white flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <h3 class="text-lg font-bold text-sh-dark">Entreprise</h3>
+                        <div><span class="text-2xl font-black text-sh-dark">Sur devis</span></div>
+                        <p class="text-[11px] text-sh-lightSlate">Projets complexes, exigences élevées</p>
+                        <p class="text-xs text-sh-slate">Architecture sur mesure pour des besoins spécifiques : intégrations avancées, garanties de service, accompagnement projet dédié.</p>
+                        <ul class="text-xs text-sh-slate space-y-1.5 pt-2 border-t border-sh-border">
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Architecture sur mesure</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Intégrations personnalisées</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>SLA garanti · chef de projet dédié</li>
+                            <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Environnement de staging · support 24/7</li>
+                        </ul>
+                    </div>
+                    <button onclick="openOfferModal('SimpleWeb Entreprise', 'Sur devis')" class="mt-6 text-center border-2 border-sh-dark text-sh-dark font-bold text-xs py-2.5 rounded-lg hover:bg-sh-dark hover:text-white transition-all">Demander un devis</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 5quater. HUB SALES — SLIDE DÉDIÉE ===================== -->
+    <section id="slide-hubsales" class="max-w-5xl mx-auto px-6 py-24 reveal">
+        <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-sh-orange/10 px-4 py-1.5 rounded-full">Module · Hub Sales</span>
+        <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">Le CRM conçu pour développer vos ventes</h2>
+        <p class="text-sm text-sh-slate mt-2 max-w-xl">Fini les leads perdus entre Excel, les e-mails et les fichiers individuels.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8 items-center">
+            <div class="lg:col-span-5 win">
+                <div class="win-bar"><span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span><span class="win-url">Fiche contact</span></div>
+                <div class="p-5 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-sh-orange/20"></div>
+                        <div><span class="text-xs font-bold text-sh-dark block">M. Dupont</span><span class="text-[9px] text-sh-lightSlate">Espace H</span></div>
+                        <span class="ml-auto text-[9px] font-bold bg-sh-green/10 text-sh-green px-2 py-0.5 rounded-full">Chaud</span>
+                    </div>
+                    <div class="h-px bg-sh-border"></div>
+                    <div class="flex items-center gap-2 text-[10px] text-sh-slate"><i data-lucide="bell-ring" class="w-3 h-3 text-sh-orange"></i>Rappel automatique : relance devis, demain 9h</div>
+                    <div class="flex items-center gap-2 text-[10px] text-sh-slate"><i data-lucide="clock" class="w-3 h-3 text-sh-orange"></i>Historique complet : 4 échanges, 1 RDV</div>
+                    <div class="flex items-center gap-2 text-[10px] text-sh-slate"><i data-lucide="smartphone" class="w-3 h-3 text-sh-orange"></i>Consultable depuis l'app mobile</div>
+                </div>
+            </div>
+            <div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div class="bento rounded-2xl p-4 text-center">
+                    <i data-lucide="database" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                    <p class="text-xs font-bold text-sh-dark mt-2">Tout centralisé</p>
+                    <p class="text-[10px] text-sh-slate mt-1">Zéro opportunité perdue.</p>
+                </div>
+                <div class="bento rounded-2xl p-4 text-center">
+                    <i data-lucide="repeat" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                    <p class="text-xs font-bold text-sh-dark mt-2">Automatisé</p>
+                    <p class="text-[10px] text-sh-slate mt-1">Moins de tâches manuelles.</p>
+                </div>
+                <div class="bento rounded-2xl p-4 text-center">
+                    <i data-lucide="bell-ring" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                    <p class="text-xs font-bold text-sh-dark mt-2">Relances</p>
+                    <p class="text-[10px] text-sh-slate mt-1">Plus aucune oubliée.</p>
+                </div>
+                <div class="bento rounded-2xl p-4 text-center">
+                    <i data-lucide="history" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                    <p class="text-xs font-bold text-sh-dark mt-2">Vision 360°</p>
+                    <p class="text-[10px] text-sh-slate mt-1">Historique complet par contact.</p>
+                </div>
+                <div class="bento rounded-2xl p-4 text-center">
+                    <i data-lucide="smartphone" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                    <p class="text-xs font-bold text-sh-dark mt-2">Mobile</p>
+                    <p class="text-[10px] text-sh-slate mt-1">Où que vous soyez.</p>
+                </div>
+                <div class="bento rounded-2xl p-4 text-center">
+                    <i data-lucide="gauge" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                    <p class="text-xs font-bold text-sh-dark mt-2">Pilotage clair</p>
+                    <p class="text-[10px] text-sh-slate mt-1">Tableaux de bord en temps réel.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 5quinquies. HUB DATA & MARKETING — SLIDE DÉDIÉE ===================== -->
+    <section id="slide-hubdata" class="bg-sh-bgGray border-y border-sh-border py-24 px-6">
+        <div class="max-w-5xl mx-auto reveal">
+            <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-white px-4 py-1.5 rounded-full border border-sh-border">Module · Hub Data & Marketing</span>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">Transformez votre marketing en moteur de croissance</h2>
+            <p class="text-sm text-sh-slate mt-2 max-w-xl">Le bon message, au bon contact, au bon moment, sans y passer vos journées.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8 items-center">
+                <div class="lg:col-span-5 win">
+                    <div class="win-bar"><span class="win-dot bg-red-400"></span><span class="win-dot bg-yellow-400"></span><span class="win-dot bg-green-400"></span><span class="win-url">Scoring</span></div>
+                    <div class="p-5 space-y-2.5">
+                        <div class="flex items-center justify-between text-[10px] text-sh-slate"><span>form.submit</span><span class="tech text-sh-green font-bold">+4</span></div>
+                        <div class="flex items-center justify-between text-[10px] text-sh-slate"><span>email.open</span><span class="tech text-sh-green font-bold">+3</span></div>
+                        <div class="flex items-center justify-between text-[10px] text-sh-slate"><span>asset.download</span><span class="tech text-sh-green font-bold">+8</span></div>
+                        <div class="h-px bg-sh-border my-2"></div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-sh-dark">Score total</span>
+                            <span class="text-sm font-black text-sh-orange tech">32 pts</span>
+                        </div>
+                        <div class="h-2 bg-sh-border rounded-full overflow-hidden"><div class="h-full bg-sh-orange" style="width:70%"></div></div>
+                        <span class="text-[9px] font-bold bg-sh-orange/10 text-sh-orange px-2 py-1 rounded-full inline-block">Prêt à recontacter</span>
+                    </div>
+                </div>
+                <div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div class="bento rounded-2xl p-4 text-center bg-white">
+                        <i data-lucide="split" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                        <p class="text-xs font-bold text-sh-dark mt-2">Segments</p>
+                        <p class="text-[10px] text-sh-slate mt-1">Le bon message, au bon contact.</p>
+                    </div>
+                    <div class="bento rounded-2xl p-4 text-center bg-white">
+                        <i data-lucide="workflow" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                        <p class="text-xs font-bold text-sh-dark mt-2">Parcours auto</p>
+                        <p class="text-[10px] text-sh-slate mt-1">Email, SMS, notifications.</p>
+                    </div>
+                    <div class="bento rounded-2xl p-4 text-center bg-white">
+                        <i data-lucide="flame" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                        <p class="text-xs font-bold text-sh-dark mt-2">Scoring</p>
+                        <p class="text-[10px] text-sh-slate mt-1">Priorisez les leads chauds.</p>
+                    </div>
+                    <div class="bento rounded-2xl p-4 text-center bg-white">
+                        <i data-lucide="route" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                        <p class="text-xs font-bold text-sh-dark mt-2">Parcours visiteur</p>
+                        <p class="text-[10px] text-sh-slate mt-1">Vision multicanale complète.</p>
+                    </div>
+                    <div class="bento rounded-2xl p-4 text-center bg-white">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                        <p class="text-xs font-bold text-sh-dark mt-2">RGPD</p>
+                        <p class="text-[10px] text-sh-slate mt-1">Données hébergées en France.</p>
+                    </div>
+                    <div class="bento rounded-2xl p-4 text-center bg-white">
+                        <i data-lucide="plug" class="w-5 h-5 text-sh-orange mx-auto"></i>
+                        <p class="text-xs font-bold text-sh-dark mt-2">Connecteurs</p>
+                        <p class="text-[10px] text-sh-slate mt-1">Votre écosystème relié.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 6. LES OFFRES ET LES TARIFS ===================== -->
+    <section id="slide-tarifs" class="max-w-6xl mx-auto px-6 py-24 reveal offer-anchor">
+        <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-sh-orange/10 px-4 py-1.5 rounded-full">Les offres et les tarifs</span>
+        <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">Un prix d'appel accessible, une montée en puissance progressive</h2>
+        <p class="text-sm text-sh-slate mt-2 max-w-2xl"><strong class="text-sh-dark">Inclus dans toutes les offres :</strong> Hub Sales (CRM) · Hub Data & Marketing · Support fonctionnel illimité</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mt-10 items-stretch">
+            <div class="bento rounded-2xl p-6 flex flex-col justify-between">
+                <div class="space-y-3">
+                    <h3 class="text-lg font-bold text-sh-dark">Essential</h3>
+                    <div><span class="text-3xl font-black text-sh-dark">49€</span><span class="text-xs text-sh-slate">/mois</span></div>
+                    <p class="text-[11px] text-sh-lightSlate">1 utilisateur · pour démarrer seul</p>
+                    <ul class="text-xs text-sh-slate space-y-1.5 pt-2 border-t border-sh-border">
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Accès complet Hub Sales + Data</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>2h d'accompagnement offertes</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Paramétrage assisté</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="plus" class="w-3.5 h-3.5 text-sh-lightSlate mt-0.5 shrink-0"></i>Licence supp. : 49€/mois</li>
+                    </ul>
+                    <p class="text-[11px] text-sh-orange font-semibold pt-2 border-t border-sh-border">Bénéfice clé : démarrer vite, sans configuration lourde.</p>
+                </div>
+                <button onclick="openOfferModal('SimpleHub Essential', '49€ HT / mois')" class="mt-6 text-center border-2 border-sh-dark text-sh-dark font-bold text-xs py-2.5 rounded-lg hover:bg-sh-dark hover:text-white transition-all w-full">Choisir</button>
+            </div>
+
+            <div class="rounded-2xl p-6 flex flex-col justify-between bg-sh-dark text-white shadow-xl relative">
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-sh-orange text-white text-[10px] font-bold uppercase tracking-wide px-3 py-1 rounded-full">Le plus choisi</span>
+                <div class="space-y-3 pt-2">
+                    <h3 class="text-lg font-bold">Starter</h3>
+                    <div><span class="text-3xl font-black text-sh-orange">149€</span><span class="text-xs text-white/70">/mois</span></div>
+                    <p class="text-[11px] text-white/60">5 utilisateurs · pour une petite équipe</p>
+                    <ul class="text-xs text-white/90 space-y-1.5 pt-2 border-t border-white/10">
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Tout Essential, pour 5 users</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>5h d'accompagnement offertes</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>1 intégration standard incluse</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="plus" class="w-3.5 h-3.5 text-white/50 mt-0.5 shrink-0"></i>Licence supp. : 49€/mois</li>
+                    </ul>
+                    <p class="text-[11px] text-sh-orange font-semibold pt-2 border-t border-white/10">Bénéfice clé : une petite équipe alignée sur un même outil, connecté à un système existant.</p>
+                </div>
+                <button onclick="openOfferModal('SimpleHub Starter', '149€ HT / mois')" class="mt-6 text-center bg-sh-orange text-white font-bold text-xs py-2.5 rounded-lg w-full">Choisir</button>
+            </div>
+
+            <div class="bento rounded-2xl p-6 flex flex-col justify-between">
+                <div class="space-y-3">
+                    <h3 class="text-lg font-bold text-sh-dark">Business</h3>
+                    <div><span class="text-3xl font-black text-sh-dark">499€</span><span class="text-xs text-sh-slate">/mois</span></div>
+                    <p class="text-[11px] text-sh-lightSlate">10 utilisateurs · pour une équipe structurée</p>
+                    <ul class="text-xs text-sh-slate space-y-1.5 pt-2 border-t border-sh-border">
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Tout Starter, pour 10 users</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Accompagnement illimité 60 jours</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>3 intégrations standard incluses</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="plus" class="w-3.5 h-3.5 text-sh-lightSlate mt-0.5 shrink-0"></i>Licence supp. : 39€/mois</li>
+                    </ul>
+                    <p class="text-[11px] text-sh-orange font-semibold pt-2 border-t border-sh-border">Bénéfice clé : un accompagnement long pour installer durablement les usages dans l'équipe.</p>
+                </div>
+                <button onclick="openOfferModal('SimpleHub Business', '499€ HT / mois')" class="mt-6 text-center border-2 border-sh-dark text-sh-dark font-bold text-xs py-2.5 rounded-lg hover:bg-sh-dark hover:text-white transition-all w-full">Choisir</button>
+            </div>
+
+            <div class="bento rounded-2xl p-6 flex flex-col justify-between">
+                <div class="space-y-3">
+                    <h3 class="text-lg font-bold text-sh-dark">Entreprise</h3>
+                    <div><span class="text-2xl font-black text-sh-dark">Sur devis</span></div>
+                    <p class="text-[11px] text-sh-lightSlate">Multi-sites · besoins spécifiques</p>
+                    <ul class="text-xs text-sh-slate space-y-1.5 pt-2 border-t border-sh-border">
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Intégrations avancées, ERP</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Connecteurs sur mesure</li>
+                        <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-sh-orange mt-0.5 shrink-0"></i>Accompagnement projet dédié</li>
+                    </ul>
+                    <p class="text-[11px] text-sh-orange font-semibold pt-2 border-t border-sh-border">Bénéfice clé : un système qui s'adapte à une organisation multi-sites ou multi-métiers.</p>
+                </div>
+                <button onclick="openOfferModal('SimpleHub Entreprise', 'Sur devis')" class="mt-6 text-center border-2 border-sh-dark text-sh-dark font-bold text-xs py-2.5 rounded-lg hover:bg-sh-dark hover:text-white transition-all">Demander un devis</button>
+            </div>
+        </div>
+
+        <p class="text-center text-sm text-sh-slate mt-8">Envie de voir par vous-même ? <a href="#slide-contact" class="text-sh-orange font-bold hover:underline">Testez le Hub Sales gratuitement pendant 14 jours</a>, accès autonome, sans CB.</p>
+        <p class="text-center text-[11px] text-sh-lightSlate mt-1">Tous prix HT · SMS suppl. : 0,12€/SMS</p>
+    </section>
+
+    <!-- ===================== OPERATIONS AS A SERVICE (charte SimpleHub) ===================== -->
+    <section id="slide-oaas" class="bg-sh-dark py-24 px-6">
+        <div class="max-w-5xl mx-auto reveal">
+            <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full">Packs d'accompagnement disponibles, en option</span>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-white leading-tight mt-6">Des équipes dédiées pour opérer votre activité</h2>
+            <p class="text-sm text-white/70 mt-2 max-w-2xl">Ces packs ne remplacent pas votre abonnement SimpleHub : ils s'ajoutent en option, à la demande, quand vous manquez de temps pour exploiter vous-même une fonctionnalité. Toutes les offres incluent : reporting mensuel · ticketing · réunion de pilotage · mise à jour du CRM · historisation.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
+                <div class="bg-white rounded-2xl p-5">
+                    <i data-lucide="target" class="w-5 h-5 text-sh-orange"></i>
+                    <h4 class="text-sm font-bold text-sh-dark mt-2">Lead Care</h4>
+                    <p class="text-xs text-sh-orange font-semibold mt-1">Ne laissez plus aucun lead sans réponse.</p>
+                    <p class="text-[11px] text-sh-slate mt-2">Qualification, réponse au prospect, prise de RDV, mise à jour CRM.</p>
+                    <div class="text-xs text-sh-dark font-bold mt-3 space-y-0.5 border-t border-sh-border pt-2">
+                        <div>100 demandes/mois : 490€</div>
+                        <div>250 demandes/mois : 790€</div>
+                        <div>500 demandes/mois : 1 090€</div>
+                        <div>Agent dédié : 1 300€</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-5">
+                    <i data-lucide="refresh-cw" class="w-5 h-5 text-sh-orange"></i>
+                    <h4 class="text-sm font-bold text-sh-dark mt-2">Lead Activation</h4>
+                    <p class="text-xs text-sh-orange font-semibold mt-1">Activez votre base de contacts.</p>
+                    <p class="text-[11px] text-sh-slate mt-2">Landing page, campagne emails + SMS, relances (jusqu'à 3 tentatives).</p>
+                    <div class="text-xs text-sh-dark font-bold mt-3 space-y-0.5 border-t border-sh-border pt-2">
+                        <div>1 000 contacts : 790€</div>
+                        <div>2 500 contacts : 1 490€</div>
+                        <div>5 000 contacts : 2 490€</div>
+                        <div>Agent dédié : 1 300€</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-5">
+                    <i data-lucide="megaphone" class="w-5 h-5 text-sh-orange"></i>
+                    <h4 class="text-sm font-bold text-sh-dark mt-2">Marketing Automation</h4>
+                    <p class="text-xs text-sh-orange font-semibold mt-1">Faites vivre votre base de données.</p>
+                    <p class="text-[11px] text-sh-slate mt-2">Création campagne + visuels, paramétrage, tests, mise en production.</p>
+                    <div class="text-xs text-sh-dark font-bold mt-3 space-y-0.5 border-t border-sh-border pt-2">
+                        <div>1 campagne/mois : 290€</div>
+                        <div>3 campagnes/mois : 590€</div>
+                        <div>6 campagnes/mois : 990€</div>
+                        <div>Agent dédié : 1 300€</div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-[11px] text-white/40 mt-6">Tous prix HT · SMS facturés au réel (0,12€/SMS) · Services activables indépendamment</p>
+        </div>
+    </section>
+
+    <!-- ===================== 7. RÉFÉRENCES CLIENTS ===================== -->
+    <section id="slide-references" class="bg-sh-bgGray border-y border-sh-border py-24 px-6">
+        <div class="max-w-5xl mx-auto reveal">
+            <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-white px-4 py-1.5 rounded-full border border-sh-border">Références</span>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-sh-dark leading-tight mt-6">Ils nous font confiance</h2>
+            <p class="text-sm text-sh-slate mt-2 max-w-2xl">Des dirigeants qui ont choisi de ne plus être seuls face à leur croissance commerciale.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mt-10">
+                <div class="bg-white border border-sh-border rounded-2xl p-6 text-center">
+                    <div class="w-10 h-10 rounded-full bg-sh-orange/10 flex items-center justify-center mx-auto mb-3"><i data-lucide="building-2" class="w-5 h-5 text-sh-orange"></i></div>
+                    <span class="text-sm font-bold text-sh-dark block">Rousseau Automobile</span>
+                    <span class="text-[10px] font-bold text-sh-orange uppercase">Automobile</span>
+                </div>
+                <div class="bg-white border border-sh-border rounded-2xl p-6 text-center">
+                    <div class="w-10 h-10 rounded-full bg-sh-orange/10 flex items-center justify-center mx-auto mb-3"><i data-lucide="building-2" class="w-5 h-5 text-sh-orange"></i></div>
+                    <span class="text-sm font-bold text-sh-dark block">Groupe Riester</span>
+                    <span class="text-[10px] font-bold text-sh-orange uppercase">Automobile</span>
+                </div>
+                <div class="bg-white border border-sh-border rounded-2xl p-6 text-center">
+                    <div class="w-10 h-10 rounded-full bg-sh-orange/10 flex items-center justify-center mx-auto mb-3"><i data-lucide="building-2" class="w-5 h-5 text-sh-orange"></i></div>
+                    <span class="text-sm font-bold text-sh-dark block">Espace H</span>
+                    <span class="text-[10px] font-bold text-sh-orange uppercase">Automobile</span>
+                </div>
+                <div class="bg-white border border-sh-border rounded-2xl p-6 text-center">
+                    <div class="w-10 h-10 rounded-full bg-sh-orange/10 flex items-center justify-center mx-auto mb-3"><i data-lucide="building-2" class="w-5 h-5 text-sh-orange"></i></div>
+                    <span class="text-sm font-bold text-sh-dark block">Evasion Camping-Cars</span>
+                    <span class="text-[10px] font-bold text-sh-orange uppercase">Voitures de loisirs</span>
+                </div>
+            </div>
+            <p class="text-center text-xs text-sh-slate italic mt-8">Secteurs variés, même besoin : une organisation commerciale qui tourne sans dépendre d'une seule personne.</p>
+        </div>
+    </section>
+
+    <!-- ===================== 8. CTA FINAL ===================== -->
+    <section id="slide-contact" class="bg-sh-dark py-24 px-6 text-white offer-anchor">
+        <div class="max-w-3xl mx-auto text-center">
+            <span class="text-xs font-bold text-sh-orange uppercase tracking-widest">Prêt à démarrer ?</span>
+            <h2 class="text-2xl md:text-4xl font-extrabold leading-tight mt-4">Votre machine commerciale peut tourner dès maintenant</h2>
+            <p class="text-sm text-white/70 mt-4">20 minutes avec notre équipe pour une démonstration adaptée à votre secteur.</p>
+            <a href="https://calendly.com/david-estorik-crm360/echanges-david-estorik" target="_blank" class="cta-btn inline-flex items-center gap-2 text-white font-bold text-sm px-8 py-3.5 rounded-lg mt-8">
+                <i data-lucide="calendar" class="w-4 h-4"></i> Réserver ma démo
+            </a>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-16 pt-8 border-t border-white/10 text-left">
+                <a href="tel:0638161858" class="flex items-center gap-3 group">
+                    <div class="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-colors"><i data-lucide="phone" class="w-4 h-4 text-sh-orange"></i></div>
+                    <div><span class="text-[10px] uppercase font-bold text-white/50 block">Téléphone</span><span class="text-sm font-bold text-white">06 38 16 18 58</span></div>
+                </a>
+                <a href="mailto:contact@simplehub.fr" class="flex items-center gap-3 group">
+                    <div class="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-colors"><i data-lucide="mail" class="w-4 h-4 text-sh-orange"></i></div>
+                    <div><span class="text-[10px] uppercase font-bold text-white/50 block">Adresse email</span><span class="text-sm font-bold text-white">contact@simplehub.fr</span></div>
+                </a>
+                <a href="https://www.simplehub.fr" target="_blank" class="flex items-center gap-3 group">
+                    <div class="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-colors"><i data-lucide="globe" class="w-4 h-4 text-sh-orange"></i></div>
+                    <div><span class="text-[10px] uppercase font-bold text-white/50 block">Site internet</span><span class="text-sm font-bold text-white">www.simplehub.fr</span></div>
+                </a>
+            </div>
+            <p class="text-xs text-white/40 mt-8">Logiciel. Humain. IA. · Solution française · RGPD</p>
+        </div>
+    </section>
+
+    <!-- OFFER REQUEST MODAL -->
+    <div id="offer-modal-wrapper" class="no-print fixed inset-0 z-[100] modal-hidden">
+        <div class="modal-backdrop absolute inset-0 bg-sh-dark/60 backdrop-blur-sm" onclick="closeOfferModal()"></div>
+        <div class="relative w-full h-full flex items-center justify-center p-4">
+            <div class="modal-panel bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+                <button onclick="closeOfferModal()" class="absolute top-4 right-4 text-sh-lightSlate hover:text-sh-dark transition-colors" aria-label="Fermer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+                <span class="text-xs font-bold text-sh-orange uppercase tracking-widest bg-sh-orange/10 px-3 py-1 rounded-full inline-block">Demande de démo</span>
+                <h3 id="offer-modal-title" class="text-xl font-extrabold text-sh-dark mt-3">Offre sélectionnée</h3>
+                <p id="offer-modal-price" class="text-sh-dark font-black text-xl mb-4">·</p>
+
+                <form id="offer-request-form" onsubmit="submitOfferRequest(event)" class="space-y-3">
+                    <input type="hidden" id="offer-name-hidden" />
+                    <div>
+                        <label class="text-[11px] font-bold text-sh-slate uppercase block mb-1">Nom complet</label>
+                        <input id="offer-form-name" type="text" required class="w-full border border-sh-border rounded-lg px-3 py-2 text-sm text-sh-dark focus:outline-none focus:border-sh-orange transition-colors" placeholder="Jean Dupont" />
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-sh-slate uppercase block mb-1">Entreprise</label>
+                        <input id="offer-form-company" type="text" required class="w-full border border-sh-border rounded-lg px-3 py-2 text-sm text-sh-dark focus:outline-none focus:border-sh-orange transition-colors" placeholder="Nom de votre entreprise" />
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-sh-slate uppercase block mb-1">Email professionnel</label>
+                        <input id="offer-form-email" type="email" required class="w-full border border-sh-border rounded-lg px-3 py-2 text-sm text-sh-dark focus:outline-none focus:border-sh-orange transition-colors" placeholder="jean.dupont@entreprise.fr" />
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-sh-slate uppercase block mb-1">Message (optionnel)</label>
+                        <textarea id="offer-form-message" rows="3" class="w-full border border-sh-border rounded-lg px-3 py-2 text-sm text-sh-dark focus:outline-none focus:border-sh-orange transition-colors resize-none" placeholder="Précisez votre besoin si utile..."></textarea>
+                    </div>
+                    <button id="offer-submit-btn" type="submit" class="cta-btn w-full text-white font-bold text-sm py-3 rounded-lg mt-2">Envoyer ma demande</button>
+                    <div id="offer-feedback" class="hidden"></div>
+                    <div class="flex items-center gap-3 py-2">
+                        <div class="flex-1" style="height:1px;background:#E2E8F0;"></div>
+                        <span class="text-[10px] text-sh-lightSlate uppercase font-semibold">ou</span>
+                        <div class="flex-1" style="height:1px;background:#E2E8F0;"></div>
+                    </div>
+                    <a href="https://calendly.com/david-estorik-crm360/echanges-david-estorik" target="_blank" class="w-full flex items-center justify-center gap-2 border-2 border-sh-orange text-sh-orange font-bold text-sm py-3 rounded-lg hover:bg-sh-orange hover:text-white transition-all">
+                        <i data-lucide="calendar" class="w-4 h-4"></i>
+                        Prendre rendez-vous directement
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            initLucideIcons();
+            setupRevealAnimations();
+            setupScrollProgress();
+            setupScrollSpy();
+        });
+
+        function initLucideIcons(attemptsLeft = 10) {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) { lucide.createIcons(); return; }
+            if (attemptsLeft > 0) setTimeout(() => initLucideIcons(attemptsLeft - 1), 200);
+        }
+
+        function setupRevealAnimations() {
+            const els = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } });
+            }, { threshold: 0.1 });
+            els.forEach((el) => observer.observe(el));
+        }
+
+        function setupScrollProgress() {
+            const bar = document.getElementById('scroll-progress');
+            if (!bar) return;
+            const update = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                bar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+            };
+            window.addEventListener('scroll', update, { passive: true });
+            update();
+        }
+
+        function setupScrollSpy() {
+            const sectionIds = ['slide-benefices', 'slide-comment', 'slide-different', 'slide-modules', 'slide-tarifs', 'slide-references'];
+            const sections = sectionIds.map((id) => document.getElementById(id)).filter(Boolean);
+            const navLinks = document.querySelectorAll('#main-nav .nav-link');
+            const dotLinks = document.querySelectorAll('#side-dots .dot-link');
+
+            function setActive(id) {
+                navLinks.forEach((link) => {
+                    const isActive = link.getAttribute('href') === '#' + id;
+                    link.classList.toggle('border-sh-orange', isActive);
+                    link.classList.toggle('text-sh-orange', isActive);
+                    link.classList.toggle('border-transparent', !isActive);
+                    link.classList.toggle('text-sh-slate', !isActive);
+                });
+                dotLinks.forEach((dot) => {
+                    const isActive = dot.getAttribute('href') === '#' + id;
+                    dot.classList.toggle('bg-sh-orange', isActive);
+                    dot.classList.toggle('bg-sh-border', !isActive);
+                    dot.classList.toggle('h-6', isActive);
+                    dot.classList.toggle('h-2', !isActive);
+                });
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => { if (entry.isIntersecting) setActive(entry.target.id); });
+            }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+            sections.forEach((section) => observer.observe(section));
+        }
+
+        function openOfferModal(offerName, offerPrice) {
+            document.getElementById('offer-modal-title').innerText = offerName;
+            document.getElementById('offer-modal-price').innerText = offerPrice;
+            document.getElementById('offer-name-hidden').value = offerName;
+            document.getElementById('offer-modal-wrapper').classList.remove('modal-hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeOfferModal() {
+            document.getElementById('offer-modal-wrapper').classList.add('modal-hidden');
+            document.body.style.overflow = '';
+            const fb = document.getElementById('offer-feedback');
+            fb.classList.add('hidden');
+            fb.textContent = '';
+        }
+
+        async function submitOfferRequest(event) {
+            event.preventDefault();
+            const offer = document.getElementById('offer-name-hidden').value;
+            const name = document.getElementById('offer-form-name').value;
+            const company = document.getElementById('offer-form-company').value;
+            const email = document.getElementById('offer-form-email').value;
+            const message = document.getElementById('offer-form-message').value;
+
+            const submitBtn = document.getElementById('offer-submit-btn');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Envoi en cours...';
+
+            const payload = {
+                access_key: '9d796ef1-473f-4614-9da6-95a6d064a356',
+                subject: `Demande de démo SimpleHub : ${offer}`,
+                from_name: "Plaquette SimpleHub",
+                "Offre demandée": offer,
+                "Nom": name,
+                "Entreprise": company,
+                "Email du contact": email,
+                "Message": message || "(aucun message)",
+            };
+
+            try {
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    showOfferFeedback(true, "Votre demande a bien été envoyée. Nous revenons vers vous sous 48h.");
+                    document.getElementById('offer-request-form').reset();
+                    setTimeout(closeOfferModal, 2200);
+                } else {
+                    showOfferFeedback(false, "L'envoi a échoué. Réessayez ou contactez-nous directement.");
+                }
+            } catch (err) {
+                showOfferFeedback(false, "Connexion impossible. Réessayez ou contactez-nous directement.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        }
+
+        function showOfferFeedback(success, text) {
+            const fb = document.getElementById('offer-feedback');
+            fb.classList.remove('hidden');
+            fb.textContent = text;
+            fb.className = success
+                ? 'text-xs font-semibold text-sh-green bg-sh-green/10 border border-sh-green/20 rounded-lg p-2 text-center'
+                : 'text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-lg p-2 text-center';
+        }
+    </script>
+</body>
+</html>
